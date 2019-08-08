@@ -8,6 +8,9 @@ const logger = require('koa-logger')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
+const pv = require('./middleware/koa-pv')
+const mongoose = require('mongoose')
+const dbConfig = require('./dbs/config')
 
 // error handler
 onerror(app)
@@ -16,6 +19,7 @@ onerror(app)
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
+app.use(pv())
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
@@ -35,7 +39,10 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
-
+// 链接数据库
+mongoose.connect(dbConfig.dbs,{
+  useNewUrlParser: true
+})
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
