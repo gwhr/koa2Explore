@@ -8,6 +8,7 @@ const logger = require('koa-logger')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
+const register = require('./routes/register')
 const pv = require('./middleware/koa-pv')
 const mongoose = require('mongoose')
 const dbConfig = require('./dbs/config')
@@ -39,6 +40,7 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+app.use(register.routes(), register.allowedMethods())
 // 链接数据库
 mongoose.connect(dbConfig.dbs,{
   useNewUrlParser: true
