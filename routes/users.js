@@ -3,6 +3,7 @@ const User = require('../dbs/models/user');
 
 let code = 200;
 router.post('/register', async function(ctx,next){
+     console.log(ctx.request.body,'body')
     const users = new User({
         email:ctx.request.body.email,
         name:ctx.request.body.name,
@@ -43,7 +44,11 @@ router.post('/register', async function(ctx,next){
     
 })
     router.post('/login',async function (ctx,next){
-        
+        User.find({'name':'郭玮2'},function(err,doc){
+            if(doc){
+                console.log(doc)
+            }
+        })
     })
 
 module.exports = router 
