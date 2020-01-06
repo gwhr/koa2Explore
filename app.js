@@ -15,7 +15,7 @@ const mongoose = require('mongoose')
 const dbConfig = require('./dbs/config')
 
 const cors = require('koa2-cors')//设置跨域
-const koaBody = require('koa-body');//设置请求
+// const koaBody = require('koa-body');//设置请求
 // error handler
 onerror(app)
 
@@ -27,7 +27,7 @@ app.use(pv())
 app.use(json())
 app.use(logger())
 app.use(cors())
-app.use(koaBody())
+// app.use(koaBody())
 app.use(require('koa-static')(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {

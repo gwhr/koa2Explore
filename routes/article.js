@@ -25,6 +25,7 @@ router.post('/article/add',async function(ctx,next){
                     console.log('res:',res)
                 }
             })
+            // let data = await Article.find().sort({_id:-1}).limit(1);
             code = 200;
             ctx.body = {
                 code,
@@ -45,5 +46,22 @@ router.post('/article/add',async function(ctx,next){
             message:`${error}不能为空`
         }
     }
+})
+router.post('/article/list',async function(ctx,next){
+    const article = {
+        title:ctx.request.body.title || null,
+        tag:ctx.request.body.tag || null,
+        classify:ctx.request.body.classify || null,
+        content:ctx.request.body.content || null,
+    }
+    let data = await Article.find({"tag":ctx.request.body.tag},function(err,data){
+        console.log(article)
+        ctx.body={
+            code,
+            data,
+            article,
+        }
+    })
+    
 })
 module.exports = router;
