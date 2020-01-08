@@ -53,9 +53,16 @@ router.post('/article/list',async function(ctx,next){
         tag:ctx.request.body.tag || null,
         classify:ctx.request.body.classify || null,
         content:ctx.request.body.content || null,
+        page:ctx.request.body.page || 1,
+        size:ctx.request.body.size || 10
     }
-    let data = await Article.find({"tag":ctx.request.body.tag},function(err,data){
-        console.log(article)
+    console.log(article.size)
+    let options = {
+        "limit":article.size,
+        "skip":((article.page-1)*article.size),
+        "sort":{'_id':-1}
+    }
+     await Article.find({},{},options,function(err,data){
         ctx.body={
             code,
             data,
