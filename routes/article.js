@@ -62,13 +62,37 @@ router.post('/article/list',async function(ctx,next){
         "skip":((article.page-1)*article.size),
         "sort":{'_id':-1}
     }
-     await Article.find({},{},options,function(err,data){
+     await Article.find({},{'__v':0,'_id':0},options,function(err,data){
         ctx.body={
             code,
             data,
             article,
         }
     })
+    
+})
+router.post('/article/details',async function(ctx,next){
+    const article = {
+        id:ctx.request.body.id || null
+    }
+    try{
+        if(!article.id){
+            code = 400;
+            throw article
+        }
+        await Article.findOne({'id':article.id},{'__v':0,'_id':0},function(err,data){
+            ctx.body={
+                code,
+                data,
+            }
+        })
+    }catch(err){
+        ctx.body= {
+            code,
+            msg:'id不能为空'
+        }
+    }
+    
     
 })
 module.exports = router;
