@@ -8,7 +8,7 @@ let articleSchema = new mongoose.Schema({
     content:String,
     describe:String,
     createTime:{ type: Date, default: Date.now },
-    id:Integer
+    id:Number
 })
 
 // 建表

@@ -1,5 +1,6 @@
 const router = require('koa-router')();
 const User = require('../dbs/models/user');
+const jsonwebtoken = require("jsonwebtoken");
 
 let code = 200;
 router.post('/register', async function(ctx,next){
@@ -11,7 +12,7 @@ router.post('/register', async function(ctx,next){
         create_time:new Date(),
         last_time:new Date()
     })
-    let arr = ['email','name','password']
+    let arr = ['name','password']
     try{
         arr.forEach(v => {
             if(!users[v]){
@@ -43,12 +44,44 @@ router.post('/register', async function(ctx,next){
     }
     
 })
-    router.post('/login',async function (ctx,next){
-        User.find({'name':'郭玮2'},function(err,doc){
-            if(doc){
-                console.log(doc)
-            }
-        })
+router.post('/login',async function (ctx,next){
+        let user = {
+            name:ctx.request.body.name,
+            password:ctx.request.body.password
+        }
+        try {
+        await    User.find(user,function(err,doc){
+                if(doc){
+                    if(doc.length > 0){
+                         let token = jsonwebtoken.sign({
+                            name:user.name,
+                        },'hrr')
+                        ctx.body = {
+                            code,
+                            data:token,
+                            message:'操作成功'
+                        }
+                    }else{
+                        code = 400;
+                        ctx.body = {
+                            code,
+                            message:'账号密码错误'
+                        }
+                    }
+                   
+                }
+                else{
+                    throw err
+                }
+            })
+        } catch (error) {
+            code = 500;
+            ctx.body = {
+                        code,
+                        message:'登录失败'
+                    }
+        }
+        
     })
 
 module.exports = router 

@@ -9,4 +9,4 @@ let user = new mongoose.Schema({
     last_time:String
 })
 // 建表
-module.exports = mongoose.model('user',user)
+module.exports = mongoose.model('users',user)

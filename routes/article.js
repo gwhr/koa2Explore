@@ -2,13 +2,16 @@ const router = require('koa-router')();
 const User = require('../dbs/models/user');
 const Article = require('../dbs/models/article');
 
-let code = 200;
+
 router.post('/article/add',async function(ctx,next){
+    let code = 200;
+    let length = await Article.countDocuments()
     const article = new Article({
         title:ctx.request.body.title,
         tag:ctx.request.body.tag,
         classify:ctx.request.body.classify,
         content:ctx.request.body.content,
+        id:length+1
     })
     let arr = ['title','tag','classify','content'];
     try{
@@ -48,6 +51,7 @@ router.post('/article/add',async function(ctx,next){
     }
 })
 router.post('/article/list',async function(ctx,next){
+    let code = 200;
     const article = {
         title:ctx.request.body.title || null,
         tag:ctx.request.body.tag || null,
@@ -56,7 +60,6 @@ router.post('/article/list',async function(ctx,next){
         page:ctx.request.body.page || 1,
         size:ctx.request.body.size || 10
     }
-    console.log(article.size)
     let options = {
         "limit":article.size,
         "skip":((article.page-1)*article.size),
@@ -72,6 +75,7 @@ router.post('/article/list',async function(ctx,next){
     
 })
 router.post('/article/details',async function(ctx,next){
+    let code = 200;
     const article = {
         id:ctx.request.body.id || null
     }
@@ -93,6 +97,36 @@ router.post('/article/details',async function(ctx,next){
         }
     }
     
+    
+})
+// 删除
+router.post('/article/delete',async function(ctx,next){
+    let code = 200;
+    const article = {
+        id:ctx.request.body.id
+    }
+    try{    
+        if(!article.id){
+            code = 400;
+            throw article
+        }
+        await Article.remove({"id":article.id},function(err,data){
+            if(data){
+                ctx.body = {
+                    code,
+                    masg:'操作成功'
+                }
+            }else{
+                throw article
+            }
+        })
+    }
+    catch(err){
+        ctx.body= {
+            code,
+            msg:'id不能为空或该数据不存在'
+        }
+    }
     
 })
 module.exports = router;

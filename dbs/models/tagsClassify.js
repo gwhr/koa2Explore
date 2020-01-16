@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 let tagsClassify = new mongoose.schema({
     tag:String,
     classify:String,
-    id:Integer,
+    id:Number,
     createTime:{ type: Timestamp, default: new Date().getTime() },
 })
 // 建表
