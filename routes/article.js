@@ -2,7 +2,7 @@ const router = require('koa-router')();
 const User = require('../dbs/models/user');
 const Article = require('../dbs/models/article');
 
-
+// 新增
 router.post('/article/add',async function(ctx,next){
     let code = 200;
     let length = await Article.countDocuments()
@@ -50,7 +50,40 @@ router.post('/article/add',async function(ctx,next){
         }
     }
 })
-router.post('/article/list',async function(ctx,next){
+// 修改
+router.post('/article/update',async function (ctx,next){
+    let code = 200;
+    const article = {
+             id:ctx.request.body.id || null,
+             
+        }
+    const updateObj = {
+             title:ctx.request.body.title,
+             tag:ctx.request.body.tag,
+             classify:ctx.request.body.classify,
+             content:ctx.request.body.content,
+    }
+    try {
+        if(!ctx.request.body.id){
+            code = 400;
+            throw article
+        }
+        await Article.update({'id':article.id},updateObj,function(err,data){
+            ctx.body={
+                code,
+                data,
+            }
+        })
+    } catch (error) {
+        code = 400
+        ctx.body= {
+            code,
+            msg:'id不能为空或该数据不存在'
+        }
+    }
+})
+// 列表
+router.post('/article/list/get',async function(ctx,next){
     let code = 200;
     const article = {
         title:ctx.request.body.title || null,
@@ -74,7 +107,8 @@ router.post('/article/list',async function(ctx,next){
     })
     
 })
-router.post('/article/details',async function(ctx,next){
+// 详情
+router.post('/article/details/get',async function(ctx,next){
     let code = 200;
     const article = {
         id:ctx.request.body.id || null

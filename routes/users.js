@@ -2,8 +2,9 @@ const router = require('koa-router')();
 const User = require('../dbs/models/user');
 const jsonwebtoken = require("jsonwebtoken");
 
-let code = 200;
+
 router.post('/register', async function(ctx,next){
+    let code = 200;
      console.log(ctx.request.body,'body')
     const users = new User({
         email:ctx.request.body.email,
@@ -45,6 +46,7 @@ router.post('/register', async function(ctx,next){
     
 })
 router.post('/login',async function (ctx,next){
+    let code = 200;
         let user = {
             name:ctx.request.body.name,
             password:ctx.request.body.password
@@ -54,7 +56,8 @@ router.post('/login',async function (ctx,next){
                 if(doc){
                     if(doc.length > 0){
                          let token = jsonwebtoken.sign({
-                            name:user.name,
+                            data:user.name,
+                            exp: Math.floor(Date.now() / 1000) + (60 * 60),
                         },'hrr')
                         ctx.body = {
                             code,
