@@ -9,6 +9,8 @@ const logger = require('koa-logger')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const article = require('./routes/article')
+const tag = require('./routes/tag')
+const classify = require('./routes/classify')
 const pv = require('./middleware/koa-pv')
 const mongoose = require('mongoose')
 const dbConfig = require('./dbs/config')
@@ -59,6 +61,8 @@ app.use(async (ctx, next) => {
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 app.use(article.routes(), article.allowedMethods())
+app.use(tag.routes(), tag.allowedMethods())
+app.use(classify.routes(), classify.allowedMethods())
 
 // 链接数据库
 mongoose.connect(dbConfig.dbs,{

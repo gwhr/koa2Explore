@@ -6,12 +6,14 @@ const Article = require('../dbs/models/article');
 router.post('/article/add',async function(ctx,next){
     let code = 200;
     let length = await Article.countDocuments()
+    console.log(length,length+1)
     const article = new Article({
         title:ctx.request.body.title,
         tag:ctx.request.body.tag,
         classify:ctx.request.body.classify,
         content:ctx.request.body.content,
-        id:length+1
+        id:length+1,
+        status:1
     })
     let arr = ['title','tag','classify','content'];
     try{
@@ -98,7 +100,7 @@ router.post('/article/list/get',async function(ctx,next){
         "skip":((article.page-1)*article.size),
         "sort":{'_id':-1}
     }
-     await Article.find({},{'__v':0,'_id':0},options,function(err,data){
+     await Article.find({"status":1},{'__v':0,'_id':0},options,function(err,data){
         ctx.body={
             code,
             data,
@@ -137,25 +139,25 @@ router.post('/article/details/get',async function(ctx,next){
 router.post('/article/delete',async function(ctx,next){
     let code = 200;
     const article = {
-        id:ctx.request.body.id
+             id:ctx.request.body.id || null,
+             
+        }
+    const updateObj = {
+             status:2
     }
-    try{    
-        if(!article.id){
+    try {
+        if(!ctx.request.body.id){
             code = 400;
             throw article
         }
-        await Article.remove({"id":article.id},function(err,data){
-            if(data){
-                ctx.body = {
-                    code,
-                    masg:'操作成功'
-                }
-            }else{
-                throw article
+        await Article.update({'id':article.id},updateObj,function(err,data){
+            ctx.body={
+                code,
+                data,
             }
         })
-    }
-    catch(err){
+    } catch (error) {
+        code = 400
         ctx.body= {
             code,
             msg:'id不能为空或该数据不存在'
